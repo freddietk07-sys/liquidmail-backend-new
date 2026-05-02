@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LiquidMail Settings</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .settings-container {
+        max-width: 600px;
+        margin: 4rem auto;
+        background-color: rgba(20, 24, 49, 0.9);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      }
+      .toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+      }
+      .toggle input[type="checkbox"] {
+        width: 40px;
+        height: 20px;
+      }
+      .message {
+        margin-top: 1rem;
+        color: #7fbae5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container settings-container">
+      <h2>Reply Settings</h2>
+      <div class="toggle">
+        <label for="auto-send-toggle">Send automated replies automatically</label>
+        <input type="checkbox" id="auto-send-toggle" />
+      </div>
+      <p class="message" id="status"></p>
+      <a href="index.html" class="cta-button">Back to Home</a>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        const toggle = document.getElementById('auto-send-toggle');
+        const statusEl = document.getElementById('status');
+        // Load current setting
+        try {
+          const res = await fetch('/settings');
+          const data = await res.json();
+          toggle.checked = !!data.autoSendDirectly;
+        } catch (err) {
+          statusEl.textContent = 'Error loading settings.';
+        }
+        // Listen for changes
+        toggle.addEventListener('change', async () => {
+          statusEl.textContent = 'Saving settings...';
+          try {
+            const res = await fetch('/settings/auto-send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ enable: toggle.checked }),
+            });
+            const data = await res.json();
+            statusEl.textContent = data.autoSendDirectly
+              ? 'Automatic replies will now be sent directly.'
+              : 'Replies will now be saved as drafts.';
+          } catch (err) {
+            statusEl.textContent = 'Error saving settings.';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

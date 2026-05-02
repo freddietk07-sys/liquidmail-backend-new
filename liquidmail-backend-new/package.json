@@ -1,0 +1,14 @@
+{
+  "name": "liquidmail-website",
+  "version": "1.0.0",
+  "description": "Marketing website for LiquidMail with payment options (Stripe and PayPal)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "stripe": "^12.0.0",
+    "dotenv": "^16.1.0"
+  }
+}
